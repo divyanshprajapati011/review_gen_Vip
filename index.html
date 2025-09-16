@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VIP Digital Hub - Review</title>
+  <style>
+    body {text-align: center;font-family: Arial, sans-serif;background: url('/static/background.jpg') no-repeat center center fixed;background-size: cover;color: #333;padding: 40px 20px;}
+    .header {text-align: center;margin-bottom: 20px;}
+    .header img {width: 80px;display: block;margin: 0 auto 10px;}
+    .header h1 {font-size: 26px;margin: 0;}
+    .overlay {background-color: rgba(255, 255, 255, 0.85);border-radius: 12px;padding: 20px;max-width: 600px;margin: 0 auto;}
+    h2 {font-size: 22px;margin-bottom: 15px;}
+    p {font-size: 18px;line-height: 1.5;}
+    button {margin-top: 20px;padding: 12px 24px;font-size: 18px;border: none;border-radius: 8px;cursor: pointer;background-color: #0b5fff;color: white;transition: background-color 0.2s;}
+    button:hover {background-color: #0846b7;}
+    .hidden {display: none;}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="/static/logo.png" alt="VIP Digital Hub Logo">
+    <h1>⭐ VIP Digital Hub</h1>
+  </div>
+  <div id="page1" class="overlay">
+    <h2>About Our Company</h2>
+    <p>At <strong>VIP Digital Hub</strong>, we specialize in creating responsive, user-friendly websites tailored to meet your business goals. Our team ensures innovative designs, fast delivery, and reliable support to help you grow your online presence.</p>
+  </div>
+  <button id="nextBtn1">➡️ Next</button>
+  <div id="page2" class="overlay hidden">
+    <h2>Customer Review</h2>
+    <p id="reviewText">Loading review...</p>
+  </div>
+  <button id="nextBtn2" class="hidden">➡️ Next</button>
+  <script>
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const reviewText = document.getElementById('reviewText');
+    const nextBtn1 = document.getElementById('nextBtn1');
+    const nextBtn2 = document.getElementById('nextBtn2');
+    let review = "";
+    nextBtn1.addEventListener('click', () => {
+      nextBtn1.style.display = "none";
+      page1.classList.add('hidden');
+      page2.classList.remove('hidden');
+      nextBtn2.classList.remove('hidden');
+      loadReview();
+    });
+    nextBtn2.addEventListener('click', copyAndRedirect);
+    function loadReview() {
+      fetch('/reviews.txt')
+        .then(response => response.text())
+        .then(data => {
+          const reviews = data.split('\n').filter(line => line.trim() !== "");
+          const randomIndex = Math.floor(Math.random() * reviews.length);
+          review = reviews[randomIndex];
+          reviewText.textContent = review;
+        })
+        .catch(err => {
+          reviewText.textContent = "Failed to load review.";
+          console.error("Error loading reviews:", err);
+        });
+    }
+    function copyAndRedirect() {
+      if (!review) {
+        alert("Review not loaded yet!");
+        return;
+      }
+      navigator.clipboard.writeText(review).then(() => {
+        window.open("https://g.page/r/CVLwfId3SaCDEAE/review", "_blank");
+      }).catch(err => {
+        alert("Copy failed. Redirecting...");
+        window.open("https://g.page/r/CVLwfId3SaCDEAE/review", "_blank");
+      });
+    }
+  </script>
+</body>
+</html>
